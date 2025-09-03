@@ -57,7 +57,7 @@ end
 
 -- KDS 설치 경로 감지
 function M.detect_kds_path()
-    -- 실행파일 우선순위: eclipsec.exe > kinetis-design-studio.exe > eclipse.exe
+    -- 실행파일 우선순위: kinetis-design-studio.exe > eclipsec.exe > eclipse.exe
     local executable_names = {
         "kinetis-design-studio.exe", -- KDS 전용 실행파일
         "eclipsec.exe",              -- 헤드리스 모드 (권장)
