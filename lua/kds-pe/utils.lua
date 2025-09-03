@@ -57,28 +57,52 @@ end
 
 -- KDS 설치 경로 감지
 function M.detect_kds_path()
-    -- 환경변수 확인
+    -- 실행파일 우선순위: eclipsec.exe > kinetis-design-studio.exe > eclipse.exe
+    local executable_names = {
+        "eclipsec.exe",  -- 헤드리스 모드 (권장)
+        "kinetis-design-studio.exe",  -- KDS 전용 실행파일
+        "eclipse.exe"    -- 일반 Eclipse 실행파일
+    }
+    
+    -- 환경변수 KDS_HOME 확인
     local kds_home = vim.fn.getenv("KDS_HOME")
     if kds_home and kds_home ~= vim.NIL then
-        local eclipse_path = kds_home .. "\\eclipse\\eclipsec.exe"
-        if vim.fn.executable(eclipse_path) == 1 then
-            return eclipse_path
+        -- KDS_HOME에서 실행파일 찾기
+        for _, exe_name in ipairs(executable_names) do
+            local exe_path = kds_home .. "\\eclipse\\" .. exe_name
+            if vim.fn.executable(exe_path) == 1 then
+                return exe_path
+            end
+            -- eclipse 폴더 없이 바로 있는 경우도 확인
+            exe_path = kds_home .. "\\" .. exe_name
+            if vim.fn.executable(exe_path) == 1 then
+                return exe_path
+            end
         end
     end
     
     -- 기본 설치 경로들 확인
-    local default_paths = {
-        "C:\\Freescale\\KDS_v3\\eclipse\\eclipsec.exe",
-        "C:\\NXP\\KDS_v3\\eclipse\\eclipsec.exe",
-        "C:\\Program Files\\Freescale\\KDS_v3\\eclipse\\eclipsec.exe",
-        "C:\\Program Files (x86)\\Freescale\\KDS_v3\\eclipse\\eclipsec.exe",
-        "C:\\Freescale\\KDS_v2\\eclipse\\eclipsec.exe",
-        "C:\\NXP\\KDS_v2\\eclipse\\eclipsec.exe"
+    local base_paths = {
+        "C:\\Freescale\\KDS_v3",
+        "C:\\NXP\\KDS_v3", 
+        "C:\\Program Files\\Freescale\\KDS_v3",
+        "C:\\Program Files (x86)\\Freescale\\KDS_v3",
+        "C:\\Freescale\\KDS_v2",
+        "C:\\NXP\\KDS_v2"
     }
     
-    for _, path in ipairs(default_paths) do
-        if vim.fn.executable(path) == 1 then
-            return path
+    for _, base_path in ipairs(base_paths) do
+        for _, exe_name in ipairs(executable_names) do
+            -- eclipse 하위 폴더에서 찾기
+            local exe_path = base_path .. "\\eclipse\\" .. exe_name
+            if vim.fn.executable(exe_path) == 1 then
+                return exe_path
+            end
+            -- 루트에서 찾기
+            exe_path = base_path .. "\\" .. exe_name
+            if vim.fn.executable(exe_path) == 1 then
+                return exe_path
+            end
         end
     end
     
@@ -103,5 +127,6 @@ function M.get_workspace_path()
     
     return workspace_dir
 end
+
 
 return M

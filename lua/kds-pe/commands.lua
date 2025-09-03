@@ -12,6 +12,7 @@ function M.pe_generate()
         return
     end
     
+    
     local kds_path = utils.detect_kds_path()
     if not kds_path then
         vim.notify("KDS 설치를 찾을 수 없습니다! KDS_HOME 환경변수를 설정하거나 기본 경로에 설치하세요.", vim.log.levels.ERROR)
@@ -66,6 +67,7 @@ function M.build()
         vim.notify("KDS 프로젝트가 아닙니다!", vim.log.levels.ERROR)
         return
     end
+    
     
     local kds_path = utils.detect_kds_path()
     if not kds_path then

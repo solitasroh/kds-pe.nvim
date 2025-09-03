@@ -93,17 +93,22 @@ set KDS_HOME=C:\Your\Custom\KDS\Path
 플러그인은 다음 순서로 KDS 설치를 찾습니다:
 
 1. **환경변수 KDS_HOME**
-   ```
-   %KDS_HOME%\eclipse\eclipsec.exe
-   ```
+   - `%KDS_HOME%\eclipse\eclipsec.exe`
+   - `%KDS_HOME%\eclipse\kinetis-design-studio.exe`
+   - `%KDS_HOME%\eclipse\eclipse.exe`
 
 2. **기본 설치 경로**
-   - `C:\Freescale\KDS_v3\eclipse\eclipsec.exe`
-   - `C:\NXP\KDS_v3\eclipse\eclipsec.exe`
-   - `C:\Program Files\Freescale\KDS_v3\eclipse\eclipsec.exe`
-   - `C:\Program Files (x86)\Freescale\KDS_v3\eclipse\eclipsec.exe`
-   - `C:\Freescale\KDS_v2\eclipse\eclipsec.exe`
-   - `C:\NXP\KDS_v2\eclipse\eclipsec.exe`
+   - `C:\Freescale\KDS_v3\`
+   - `C:\NXP\KDS_v3\`
+   - `C:\Program Files\Freescale\KDS_v3\`
+   - `C:\Program Files (x86)\Freescale\KDS_v3\`
+   - `C:\Freescale\KDS_v2\`
+   - `C:\NXP\KDS_v2\`
+
+3. **실행파일 우선순위** (각 경로에서)
+   - `eclipsec.exe` (헤드리스 모드, 권장)
+   - `kinetis-design-studio.exe` (KDS 전용 실행파일)
+   - `eclipse.exe` (일반 Eclipse 실행파일)
 
 ## 🏗️ 프로젝트 구조
 
@@ -120,6 +125,27 @@ kds-pe.nvim/
 ```
 
 ## 🐛 문제 해결
+
+### Java Virtual Machine을 찾을 수 없다는 오류
+```
+Could not find the Java Virtual Machine
+```
+**해결방법:**
+1. **JRE/JDK 설치**: Java Runtime Environment 8 이상 또는 JDK 8 이상 설치
+2. **JAVA_HOME 환경변수 설정**:
+   ```bash
+   # PowerShell
+   $env:JAVA_HOME = "C:\Program Files\Java\jdk-11.0.x"
+   
+   # CMD  
+   set JAVA_HOME=C:\Program Files\Java\jdk-11.0.x
+   ```
+3. **PATH에 Java bin 디렉토리 추가**:
+   ```bash
+   # PowerShell
+   $env:PATH += ";$env:JAVA_HOME\bin"
+   ```
+4. **설치 확인**: 터미널에서 `java -version` 실행하여 Java가 정상 작동하는지 확인
 
 ### KDS를 찾을 수 없다는 오류
 1. KDS가 설치되어 있는지 확인
