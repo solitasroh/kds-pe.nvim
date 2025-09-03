@@ -22,17 +22,17 @@ function M.setup()
     end, { desc = "Build KDS project" })
 
     -- 키맵핑 설정
-    vim.keymap.set("n", "<leader>kp", "<cmd>KDSPEGenerate<cr>", { 
+    vim.keymap.set("n", "<leader>kp", "<cmd>KDSPEGenerate<cr>", {
         desc = "KDS PE Generate",
         buffer = true
     })
-    
-    vim.keymap.set("n", "<leader>kb", "<cmd>KDSBuild<cr>", { 
+
+    vim.keymap.set("n", "<leader>kb", "<cmd>KDSBuild<cr>", {
         desc = "KDS Build",
         buffer = true
     })
 
-    print("KDS PE plugin loaded for project: " .. utils.get_project_name())
+    -- print("KDS PE plugin loaded for project: " .. utils.get_project_name())
 end
 
 -- PE Generate 실행
