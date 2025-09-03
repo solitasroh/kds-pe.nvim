@@ -163,15 +163,14 @@ dependencies = { "akinsho/toggleterm.nvim" }
 - 파일에 KDS 관련 내용이 포함되어 있는지 확인
 
 ### 빌드 로그가 터미널에 표시되지 않는 경우
-**v1.2 업데이트로 완전 해결되었습니다!**
+**v1.3 업데이트로 단순하고 명확하게 해결!**
 
 **개선사항:**
-- `PowerShell -WindowStyle Hidden`으로 cmd 창 없이 실행
-- `2>&1` 리다이렉션으로 stderr까지 완전 캡처  
-- `-consolelog -debug` 옵션으로 상세 로그 출력
-- `-vmargs -Declipse.log.level=ALL`로 모든 로그 레벨 표시
-- ToggleTerm stdout 전달 로직 최적화
-- 실시간 자동 스크롤 및 버퍼 설정 개선
+- 불필요한 PowerShell/cmd 래퍼 제거
+- KDS 실행파일을 ToggleTerm에서 직접 실행
+- `-consolelog` 옵션으로 콘솔 출력 활성화
+- 단순하고 직접적인 명령어 구성
+- ToggleTerm이 자동으로 stdout/stderr 캡처
 
 **여전히 문제가 있다면:**
 1. **터미널 스크롤**: 위로 스크롤하여 출력 내용 확인

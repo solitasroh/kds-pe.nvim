@@ -22,9 +22,9 @@ function M.pe_generate()
     local workspace = utils.get_workspace_path()
     local project_name = utils.get_project_name()
 
-    -- PE Generate 명령어 구성 (cmd 창 없이 직접 실행)
+    -- PE Generate 명령어 구성 (직접 실행)
     local cmd = string.format(
-        'powershell -WindowStyle Hidden -Command "& \'%s\' -nosplash -application com.freescale.processorexpert.core.generator -data \'%s\' -project \'%s\' -consolelog -debug -vmargs -Declipse.log.level=ALL 2>&1"',
+        '"%s" -nosplash -application com.freescale.processorexpert.core.generator -data "%s" -project "%s" -consolelog',
         kds_path,
         workspace,
         project_name
@@ -45,21 +45,8 @@ function M.pe_generate()
         direction = "horizontal",
         size = 20,
         close_on_exit = false,
-        start_in_insert = false,  -- Normal 모드로 시작하여 출력 보기 편하게
         on_open = function(term)
-            -- 터미널 설정 최적화 (stdout 전달에 최적화)
-            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'scrollback', 50000)
-            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'wrap', false)
-            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'number', false)
-            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'relativenumber', false)
-            
-            -- 실시간 스크롤을 위한 autocmd 설정
-            vim.api.nvim_create_autocmd("BufWinEnter", {
-                buffer = term.bufnr,
-                callback = function()
-                    vim.cmd("normal! G")  -- 버퍼 끝으로 이동
-                end
-            })
+            vim.cmd("startinsert!")
         end,
         on_exit = function(term, job, exit_code, name)
             if exit_code == 0 then
@@ -91,9 +78,9 @@ function M.build()
     local workspace = utils.get_workspace_path()
     local project_name = utils.get_project_name()
 
-    -- Build 명령어 구성 (cmd 창 없이 직접 실행)
+    -- Build 명령어 구성 (직접 실행)
     local cmd = string.format(
-        'powershell -WindowStyle Hidden -Command "& \'%s\' -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -build \'%s\' -data \'%s\' -consolelog -debug -vmargs -Declipse.log.level=ALL 2>&1"',
+        '"%s" -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -build "%s" -data "%s" -consolelog',
         kds_path,
         project_name,
         workspace
@@ -114,21 +101,8 @@ function M.build()
         direction = "horizontal",
         size = 20,
         close_on_exit = false,
-        start_in_insert = false,  -- Normal 모드로 시작하여 출력 보기 편하게
         on_open = function(term)
-            -- 터미널 설정 최적화 (stdout 전달에 최적화)
-            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'scrollback', 50000)
-            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'wrap', false)
-            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'number', false)
-            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'relativenumber', false)
-            
-            -- 실시간 스크롤을 위한 autocmd 설정
-            vim.api.nvim_create_autocmd("BufWinEnter", {
-                buffer = term.bufnr,
-                callback = function()
-                    vim.cmd("normal! G")  -- 버퍼 끝으로 이동
-                end
-            })
+            vim.cmd("startinsert!")
         end,
         on_exit = function(term, job, exit_code, name)
             if exit_code == 0 then
