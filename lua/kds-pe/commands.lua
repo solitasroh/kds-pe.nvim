@@ -45,29 +45,16 @@ function M.pe_generate()
         direction = "horizontal",
         size = 15,
         close_on_exit = false,
-        auto_scroll = true,  -- 자동 스크롤 활성화
         on_open = function(term)
             vim.cmd("startinsert!")
-            -- 실시간 출력을 위해 터미널 설정 최적화
-            vim.api.nvim_buf_set_option(term.bufnr, 'scrollback', 10000)
+            -- 터미널 설정 최적화 (안전하게 처리)
+            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'scrollback', 10000)
         end,
         on_exit = function(term, job, exit_code, name)
             if exit_code == 0 then
                 vim.notify("PE Generate 완료!", vim.log.levels.INFO)
             else
                 vim.notify("PE Generate 실패! (exit code: " .. exit_code .. ")", vim.log.levels.ERROR)
-            end
-        end,
-        on_stdout = function(term, job, data, name)
-            -- 출력 데이터가 있을 때 처리 (실시간 출력 보장)
-            if data and #data > 0 then
-                vim.schedule(function()
-                    -- 터미널 창이 보이도록 스크롤 조정
-                    local winnr = vim.fn.bufwinnr(term.bufnr)
-                    if winnr > 0 then
-                        vim.api.nvim_win_set_cursor(winnr, {vim.api.nvim_buf_line_count(term.bufnr), 0})
-                    end
-                end)
             end
         end,
     })
@@ -115,11 +102,10 @@ function M.build()
         direction = "horizontal", 
         size = 15,
         close_on_exit = false,
-        auto_scroll = true,  -- 자동 스크롤 활성화
         on_open = function(term)
             vim.cmd("startinsert!")
-            -- 실시간 출력을 위해 터미널 설정 최적화
-            vim.api.nvim_buf_set_option(term.bufnr, 'scrollback', 10000)
+            -- 터미널 설정 최적화 (안전하게 처리)
+            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'scrollback', 10000)
         end,
         on_exit = function(term, job, exit_code, name)
             if exit_code == 0 then
@@ -128,18 +114,6 @@ function M.build()
                 vim.cmd("copen")
             else
                 vim.notify("Build 실패! (exit code: " .. exit_code .. ")", vim.log.levels.ERROR)
-            end
-        end,
-        on_stdout = function(term, job, data, name)
-            -- 출력 데이터가 있을 때 처리 (실시간 출력 보장)
-            if data and #data > 0 then
-                vim.schedule(function()
-                    -- 터미널 창이 보이도록 스크롤 조정
-                    local winnr = vim.fn.bufwinnr(term.bufnr)
-                    if winnr > 0 then
-                        vim.api.nvim_win_set_cursor(winnr, {vim.api.nvim_buf_line_count(term.bufnr), 0})
-                    end
-                end)
             end
         end,
     })
