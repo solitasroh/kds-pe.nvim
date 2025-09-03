@@ -11,27 +11,27 @@ function M.pe_generate()
         vim.notify("KDS 프로젝트가 아닙니다!", vim.log.levels.ERROR)
         return
     end
-    
-    
+
+
     local kds_path = utils.detect_kds_path()
     if not kds_path then
         vim.notify("KDS 설치를 찾을 수 없습니다! KDS_HOME 환경변수를 설정하거나 기본 경로에 설치하세요.", vim.log.levels.ERROR)
         return
     end
-    
+
     local workspace = utils.get_workspace_path()
     local project_name = utils.get_project_name()
-    
-    -- PE Generate 명령어 구성
+
+    -- PE Generate 명령어 구성 (향상된 로그 출력 옵션)
     local cmd = string.format(
-        '"%s" -nosplash -application com.freescale.processorexpert.core.generator -data "%s" -project "%s"',
+        'cmd /c ""%s" -nosplash -application com.freescale.processorexpert.core.generator -data "%s" -project "%s" -consolelog -debug -vmargs -Declipse.log.level=ALL 2>&1"',
         kds_path,
         workspace,
         project_name
     )
-    
+
     vim.notify("PE Generate 시작: " .. project_name, vim.log.levels.INFO)
-    
+
     -- ToggleTerm 사용 가능 여부 확인
     local ok, Terminal = pcall(require, 'toggleterm.terminal')
     if not ok then
@@ -43,12 +43,14 @@ function M.pe_generate()
         cmd = cmd,
         dir = workspace,
         direction = "horizontal",
-        size = 15,
+        size = 20,  -- 로그 표시를 위해 크기 증가
         close_on_exit = false,
+        shell = vim.o.shell,  -- 시스템 기본 셸 사용
         on_open = function(term)
             vim.cmd("startinsert!")
             -- 터미널 설정 최적화 (안전하게 처리)
-            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'scrollback', 10000)
+            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'scrollback', 50000)
+            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'wrap', false)
         end,
         on_exit = function(term, job, exit_code, name)
             if exit_code == 0 then
@@ -58,7 +60,7 @@ function M.pe_generate()
             end
         end,
     })
-    
+
     pe_term:toggle()
 end
 
@@ -69,26 +71,27 @@ function M.build()
         vim.notify("KDS 프로젝트가 아닙니다!", vim.log.levels.ERROR)
         return
     end
-    
-    
+
+
     local kds_path = utils.detect_kds_path()
     if not kds_path then
         vim.notify("KDS 설치를 찾을 수 없습니다! KDS_HOME 환경변수를 설정하거나 기본 경로에 설치하세요.", vim.log.levels.ERROR)
         return
     end
-    
+
     local workspace = utils.get_workspace_path()
     local project_name = utils.get_project_name()
-    
-    -- Build 명령어 구성 (verbose 출력 옵션 추가)
+
+    -- Build 명령어 구성 (향상된 로그 출력 옵션)
     local cmd = string.format(
-        '"%s" -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -build "%s" -verbose',
+        'cmd /c ""%s" -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -build "%s" -data "%s" -consolelog -debug -vmargs -Declipse.log.level=ALL 2>&1"',
         kds_path,
-        project_name
+        project_name,
+        workspace
     )
-    
+
     vim.notify("Build 시작: " .. project_name, vim.log.levels.INFO)
-    
+
     -- ToggleTerm 사용 가능 여부 확인
     local ok, Terminal = pcall(require, 'toggleterm.terminal')
     if not ok then
@@ -99,13 +102,15 @@ function M.build()
     local build_term = Terminal:new({
         cmd = cmd,
         dir = workspace,
-        direction = "horizontal", 
-        size = 15,
+        direction = "horizontal",
+        size = 20,  -- 로그 표시를 위해 크기 증가
         close_on_exit = false,
+        shell = vim.o.shell,  -- 시스템 기본 셸 사용
         on_open = function(term)
             vim.cmd("startinsert!")
             -- 터미널 설정 최적화 (안전하게 처리)
-            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'scrollback', 10000)
+            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'scrollback', 50000)
+            pcall(vim.api.nvim_buf_set_option, term.bufnr, 'wrap', false)
         end,
         on_exit = function(term, job, exit_code, name)
             if exit_code == 0 then
@@ -117,7 +122,7 @@ function M.build()
             end
         end,
     })
-    
+
     build_term:toggle()
 end
 
