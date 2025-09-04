@@ -19,7 +19,15 @@ function M.setup()
 
     vim.api.nvim_create_user_command("KDSBuild", function()
         commands.build()
-    end, { desc = "Build KDS project" })
+    end, { desc = "Build KDS project (auto: make or headless)" })
+    
+    vim.api.nvim_create_user_command("KDSMakeBuild", function()
+        commands.make_build()
+    end, { desc = "Build KDS project with make" })
+    
+    vim.api.nvim_create_user_command("KDSHeadlessBuild", function()
+        commands.headless_build()  
+    end, { desc = "Build KDS project with Eclipse headless" })
 
     -- 키맵핑 설정
     vim.keymap.set("n", "<leader>kp", "<cmd>KDSPEGenerate<cr>", {

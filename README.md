@@ -76,7 +76,9 @@ set KDS_HOME=C:\Your\Custom\KDS\Path
 
 ### 명령어
 - `:KDSPEGenerate` - PE 코드 생성
-- `:KDSBuild` - 프로젝트 빌드
+- `:KDSBuild` - 프로젝트 빌드 (자동: make 우선, headless 대안)
+- `:KDSMakeBuild` - Make를 사용한 빌드 (빠름, 상세 로그)
+- `:KDSHeadlessBuild` - Eclipse headless 빌드 (초기 설정용)
 - `:KDSSetup` - 플러그인 수동 활성화
 
 ### 키매핑 (KDS 프로젝트에서만 활성화)
@@ -163,14 +165,18 @@ dependencies = { "akinsho/toggleterm.nvim" }
 - 파일에 KDS 관련 내용이 포함되어 있는지 확인
 
 ### 빌드 로그가 터미널에 표시되지 않는 경우
-**v1.3 업데이트로 단순하고 명확하게 해결!**
+**v2.0 업데이트: 조건부 빌드 시스템으로 완전 해결!**
 
-**개선사항:**
-- 불필요한 PowerShell/cmd 래퍼 제거
-- KDS 실행파일을 ToggleTerm에서 직접 실행
-- `-consolelog` 옵션으로 콘솔 출력 활성화
-- 단순하고 직접적인 명령어 구성
-- ToggleTerm이 자동으로 stdout/stderr 캡처
+**🚀 새로운 빌드 방식:**
+- **자동 선택**: Debug 폴더와 Makefile 존재 시 `make` 빌드 우선 사용
+- **첫 번째 빌드**: Eclipse headless로 Debug 폴더 및 Makefile 자동 생성
+- **이후 빌드**: 빠른 `make` 빌드로 자동 전환
+- **수동 선택**: `:KDSMakeBuild`, `:KDSHeadlessBuild` 명령어로 직접 선택
+
+**장점:**
+- make 빌드는 상세한 컴파일 로그를 실시간으로 표시
+- Eclipse headless보다 훨씬 빠른 빌드 속도
+- 로그 출력 문제 완전 해결
 
 **여전히 문제가 있다면:**
 1. **터미널 스크롤**: 위로 스크롤하여 출력 내용 확인

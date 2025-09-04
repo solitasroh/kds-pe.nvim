@@ -128,4 +128,43 @@ function M.get_workspace_path()
     return workspace_dir
 end
 
+-- Debug 폴더 존재 여부 확인
+function M.has_debug_folder()
+    local cwd = vim.fn.getcwd()
+    local debug_dir = cwd .. "\\Debug"
+    return vim.fn.isdirectory(debug_dir) == 1
+end
+
+-- Debug 폴더의 Makefile 존재 여부 확인  
+function M.has_makefile()
+    local cwd = vim.fn.getcwd()
+    local makefile_path = cwd .. "\\Debug\\makefile"
+    return vim.fn.filereadable(makefile_path) == 1
+end
+
+-- make 빌드 가능 여부 확인 (Debug 폴더 + Makefile 존재)
+function M.can_use_make_build()
+    return M.has_debug_folder() and M.has_makefile()
+end
+
+-- make 실행파일 경로 감지
+function M.detect_make_path()
+    -- PATH에서 make 명령어 확인
+    if vim.fn.executable("make") == 1 then
+        return "make"
+    end
+    
+    -- MinGW make 확인
+    if vim.fn.executable("mingw32-make") == 1 then
+        return "mingw32-make"
+    end
+    
+    -- MSYS2 make 확인  
+    if vim.fn.executable("C:\\msys64\\usr\\bin\\make.exe") == 1 then
+        return "C:\\msys64\\usr\\bin\\make.exe"
+    end
+    
+    return nil
+end
+
 return M
